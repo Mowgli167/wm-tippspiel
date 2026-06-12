@@ -38,12 +38,15 @@ export default function BonusfragenPage() {
   const isLoggedIn = currentPlayerId !== undefined;
 
   function isBonusQuestionLocked(questionId: string) {
-    // Nur Gruppe A bleibt gesperrt
+    // Gruppe A bleibt sofort gesperrt
     if (questionId === "gruppe-a") {
       return true;
     }
 
-    return false;
+    // Alle anderen Bonusfragen bleiben nur heute offen
+    const deadline = new Date("2026-06-12T23:59:59+02:00");
+
+    return new Date() > deadline;
   }
 
   const totalPossibleBonusPoints =
@@ -120,7 +123,7 @@ export default function BonusfragenPage() {
             </p>
 
             <p className="text-cyan-300 font-semibold pt-2">
-              ✅ Bonusfragen können noch geändert werden.
+              ✅ Bonusfragen können noch bis heute 23:59 Uhr geändert werden.
               Gruppe A bleibt gesperrt.
             </p>
           </section>
