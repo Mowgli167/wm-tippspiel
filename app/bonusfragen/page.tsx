@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 
 import { bonusQuestions } from "@/data/bonusQuestions";
-import { matches } from "@/data/matches";
 import { useBonusTips } from "@/hooks/useBonusTips";
 import { usePlayers } from "@/hooks/usePlayers";
 import { calculatePoints } from "@/utils";
@@ -38,11 +37,14 @@ export default function BonusfragenPage() {
 
   const isLoggedIn = currentPlayerId !== undefined;
 
-  const firstMatchStart = matches[0]?.startsAt;
+  function isBonusQuestionLocked(questionId: string) {
+    // Nur Gruppe A bleibt gesperrt
+    if (questionId === "gruppe-a") {
+      return true;
+    }
 
-  const bonusQuestionsLocked =
-    firstMatchStart !== undefined &&
-    new Date() >= new Date(firstMatchStart);
+    return false;
+  }
 
   const totalPossibleBonusPoints =
     bonusQuestions.reduce((total, question) => {
@@ -65,9 +67,9 @@ export default function BonusfragenPage() {
   ) {
     if (!isLoggedIn) return;
 
-    if (bonusQuestionsLocked) {
+    if (isBonusQuestionLocked(questionId)) {
       alert(
-        "Die Bonusfragen sind gesperrt. Änderungen sind nicht mehr möglich."
+        "Diese Bonusfrage ist bereits gesperrt."
       );
       return;
     }
@@ -117,15 +119,10 @@ export default function BonusfragenPage() {
               </span>
             </p>
 
-            {bonusQuestionsLocked ? (
-              <p className="text-red-300 font-semibold pt-2">
-                🔒 Bonusfragen sind gesperrt.
-              </p>
-            ) : (
-              <p className="text-cyan-300 font-semibold pt-2">
-                ✅ Bonusfragen können noch geändert werden.
-              </p>
-            )}
+            <p className="text-cyan-300 font-semibold pt-2">
+              ✅ Bonusfragen können noch geändert werden.
+              Gruppe A bleibt gesperrt.
+            </p>
           </section>
 
           {(loading || loadingBonusTips) && (
@@ -145,6 +142,9 @@ export default function BonusfragenPage() {
               const selectedAnswer =
                 bonusTips[question.id];
 
+              const questionLocked =
+                isBonusQuestionLocked(question.id);
+
               return (
                 <div
                   key={question.id}
@@ -154,6 +154,12 @@ export default function BonusfragenPage() {
                     <h2 className="text-2xl font-bold">
                       {question.label}
                     </h2>
+
+                    {questionLocked && (
+                      <p className="text-red-300 font-semibold mt-2">
+                        🔒 Diese Bonusfrage ist gesperrt.
+                      </p>
+                    )}
 
                     {selectedAnswer && (
                       <p className="text-sm text-zinc-400 mt-1">
@@ -177,7 +183,7 @@ export default function BonusfragenPage() {
                       return (
                         <button
                           key={option.label}
-                          disabled={bonusQuestionsLocked}
+                          disabled={questionLocked}
                           onClick={() =>
                             selectBonusTip(
                               question.id,
@@ -187,7 +193,7 @@ export default function BonusfragenPage() {
                           className={`rounded-xl border px-4 py-3 text-left transition ${
                             selected
                               ? "bg-cyan-400 text-slate-950 border-cyan-300"
-                              : bonusQuestionsLocked
+                              : questionLocked
                                 ? "bg-slate-950/50 text-zinc-500 border-slate-700 cursor-not-allowed"
                                 : "bg-slate-950/80 text-white border-cyan-500/20 hover:bg-slate-800"
                           }`}
