@@ -49,6 +49,8 @@ export const matches: Match[] = [
     startsAt: "2026-06-12T21:00:00+02:00",
     homeTeam: "Kanada",
     awayTeam: "Bosnien-Herzegowina",
+    homeScore: 1,
+    awayScore: 1,
     options: enrichOptions([
       { label: "H2", quote: 4.0 },
       { label: "X", quote: 3.6 },
@@ -67,6 +69,8 @@ export const matches: Match[] = [
     startsAt: "2026-06-13T03:00:00+02:00",
     homeTeam: "USA",
     awayTeam: "Paraguay",
+    homeScore: 4,
+    awayScore: 1,
     options: enrichOptions([
       { label: "H2", quote: 4.2 },
       { label: "X", quote: 3.4 },
