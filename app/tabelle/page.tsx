@@ -13,6 +13,24 @@ import {
   isWinningTip,
 } from "@/utils";
 
+const teams = [
+  {
+    name: "Team Prince Polo",
+    flag: "🇵🇱",
+    playerIds: [2, 3],
+  },
+  {
+    name: "Team Toblerone",
+    flag: "🇨🇭",
+    playerIds: [8, 9],
+  },
+  {
+    name: "Team Kartoffel",
+    flag: "🇩🇪",
+    playerIds: [1, 7],
+  },
+];
+
 export default function TabellePage() {
   const { players, loading, errorMessage } = usePlayers();
   const { allTips, loadingAllTips } = useAllTips();
@@ -97,6 +115,13 @@ export default function TabellePage() {
     }, 0);
   }
 
+  function calculatePlayerTotalPoints(playerId: number) {
+    return (
+      calculatePlayerMatchPoints(playerId) +
+      calculatePlayerBonusPoints(playerId)
+    );
+  }
+
   const leaderboard = players
     .map((player) => {
       const matchPoints =
@@ -115,8 +140,33 @@ export default function TabellePage() {
     })
     .sort((a, b) => b.points - a.points);
 
+  const teamLeaderboard = teams
+    .map((team) => {
+      const members = team.playerIds
+        .map((playerId) =>
+          players.find((player) => player.id === playerId)
+        )
+        .filter(
+          (player): player is NonNullable<typeof player> =>
+            player !== undefined
+        );
+
+      const points = team.playerIds.reduce(
+        (total, playerId) =>
+          total + calculatePlayerTotalPoints(playerId),
+        0
+      );
+
+      return {
+        ...team,
+        members,
+        points,
+      };
+    })
+    .sort((a, b) => b.points - a.points);
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-950 via-blue-950 to-slate-950 p-10 space-y-8 text-white">
+    <main className="min-h-screen bg-gradient-to-b from-slate-950 via-blue-950 to-slate-950 p-6 md:p-10 space-y-8 text-white">
       <section className="rounded-3xl border border-cyan-400/30 bg-white/5 p-8 shadow-2xl">
         <p className="text-cyan-300 font-semibold tracking-wide">
           FIFA WORLD CUP 2026
@@ -186,6 +236,61 @@ export default function TabellePage() {
               <div className="text-right">
                 <p className="text-2xl font-extrabold text-yellow-300">
                   {player.points}
+                </p>
+
+                <p className="text-xs text-zinc-400">
+                  Punkte
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-slate-900/90 border border-yellow-400/20 rounded-2xl p-6 shadow-xl space-y-4">
+        <h2 className="text-2xl font-bold">
+          🤝 Teamwertung
+        </h2>
+
+        <div className="space-y-3">
+          {teamLeaderboard.map((team, index) => (
+            <div
+              key={team.name}
+              className={`grid grid-cols-[auto_1fr_auto] gap-4 items-center rounded-xl px-4 py-4 ${
+                index === 0
+                  ? "bg-yellow-400/20 border border-yellow-400"
+                  : index === 1
+                  ? "bg-slate-200/10 border border-slate-300"
+                  : index === 2
+                  ? "bg-orange-500/20 border border-orange-400"
+                  : "bg-blue-950/70 border border-cyan-500/30"
+              }`}
+            >
+              <div className="text-2xl font-extrabold">
+                {index === 0
+                  ? "🥇"
+                  : index === 1
+                  ? "🥈"
+                  : index === 2
+                  ? "🥉"
+                  : `${index + 1}.`}
+              </div>
+
+              <div>
+                <p className="text-lg font-bold">
+                  {team.flag} {team.name}
+                </p>
+
+                <p className="text-sm text-zinc-400">
+                  {team.members
+                    .map((member) => member.name)
+                    .join(" + ")}
+                </p>
+              </div>
+
+              <div className="text-right">
+                <p className="text-2xl font-extrabold text-yellow-300">
+                  {team.points}
                 </p>
 
                 <p className="text-xs text-zinc-400">
