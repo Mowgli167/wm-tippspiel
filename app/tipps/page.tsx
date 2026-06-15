@@ -255,7 +255,11 @@ export default function TippsPage() {
     );
   }, 0);
 
-  const groupedMatches = matches.reduce(
+  const visibleMatches = matches.filter(
+    (match) => !isMatchLocked(match.startsAt)
+  );
+
+  const groupedMatches = visibleMatches.reduce(
     (groups, match) => {
       if (!groups[match.phase]) {
         groups[match.phase] = [];
@@ -268,7 +272,7 @@ export default function TippsPage() {
   );
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-950 via-blue-950 to-slate-950 p-10 space-y-8 text-white">
+    <main className="min-h-screen bg-gradient-to-b from-slate-950 via-blue-950 to-slate-950 p-6 md:p-10 space-y-8 text-white">
       <section className="rounded-3xl border border-cyan-400/30 bg-white/5 p-8 shadow-2xl">
         <p className="text-cyan-300 font-semibold tracking-wide">
           FIFA WORLD CUP 2026
@@ -391,6 +395,18 @@ export default function TippsPage() {
             </p>
           )}
 
+          {visibleMatches.length === 0 && (
+            <section className="bg-slate-900/90 border border-cyan-500/20 rounded-2xl p-6">
+              <p className="text-zinc-300">
+                Aktuell sind keine offenen Spiele zum Tippen verfügbar.
+              </p>
+
+              <p className="text-zinc-400 mt-2">
+                Vergangene Spiele findest du in der Auswertung.
+              </p>
+            </section>
+          )}
+
           {Object.entries(groupedMatches).map(
             ([phase, phaseMatches]) => (
               <section key={phase} className="space-y-4">
@@ -411,50 +427,31 @@ export default function TippsPage() {
 
                 {openPhases[phase] && (
                   <div className="space-y-6">
-                    {phaseMatches.map((match) => {
-                      const locked = isMatchLocked(
-                        match.startsAt
-                      );
-
-                      return (
-                        <div
-                          key={match.id}
-                          className="space-y-2"
-                        >
-                          {locked && (
-                            <p className="text-red-400 font-semibold">
-                              🔒 Dieses Spiel ist gesperrt.
-                            </p>
-                          )}
-
-                          <MatchCard
-                            phase={match.phase}
-                            date={match.date}
-                            homeScore={match.homeScore}
-                            awayScore={match.awayScore}
-                            homeTeam={withFlag(match.homeTeam)}
-                            awayTeam={withFlag(match.awayTeam)}
-                            options={match.options}
-                            selectedTip={
-                              selectedTips[match.id]
-                            }
-                            jokerActive={jokerMatches.includes(
-                              match.id
-                            )}
-                            showJokerButton={
-                              (jokerLimits[match.phase] ?? 0) >
-                              0
-                            }
-                            onSelectTip={(tip) =>
-                              selectTip(match.id, tip)
-                            }
-                            onToggleJoker={() =>
-                              toggleJoker(match.id)
-                            }
-                          />
-                        </div>
-                      );
-                    })}
+                    {phaseMatches.map((match) => (
+                      <MatchCard
+                        key={match.id}
+                        phase={match.phase}
+                        date={match.date}
+                        homeScore={match.homeScore}
+                        awayScore={match.awayScore}
+                        homeTeam={withFlag(match.homeTeam)}
+                        awayTeam={withFlag(match.awayTeam)}
+                        options={match.options}
+                        selectedTip={selectedTips[match.id]}
+                        jokerActive={jokerMatches.includes(
+                          match.id
+                        )}
+                        showJokerButton={
+                          (jokerLimits[match.phase] ?? 0) > 0
+                        }
+                        onSelectTip={(tip) =>
+                          selectTip(match.id, tip)
+                        }
+                        onToggleJoker={() =>
+                          toggleJoker(match.id)
+                        }
+                      />
+                    ))}
                   </div>
                 )}
               </section>
