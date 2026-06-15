@@ -169,6 +169,8 @@ export const matches: Match[] = [
     startsAt: "2026-06-14T19:00:00+02:00",
     homeTeam: "Deutschland",
     awayTeam: "Curaçao",
+    homeScore: 7,
+    awayScore: 1,
     options: enrichOptions([
       { label: "H2", quote: 1.35 },
       { label: "X", quote: 9.0 },
@@ -187,6 +189,8 @@ export const matches: Match[] = [
     startsAt: "2026-06-14T22:00:00+02:00",
     homeTeam: "Niederlande",
     awayTeam: "Japan",
+    homeScore: 2,
+    awayScore: 2,
     options: enrichOptions([
       { label: "H2", quote: 3.3 },
       { label: "X", quote: 3.8 },
@@ -205,6 +209,8 @@ export const matches: Match[] = [
     startsAt: "2026-06-15T01:00:00+02:00",
     homeTeam: "Elfenbeinküste",
     awayTeam: "Ecuador",
+    homeScore: 1,
+    awayScore: 0,
     options: enrichOptions([
       { label: "H2", quote: 7.0 },
       { label: "X", quote: 3.2 },
@@ -223,6 +229,8 @@ export const matches: Match[] = [
     startsAt: "2026-06-15T04:00:00+02:00",
     homeTeam: "Schweden",
     awayTeam: "Tunesien",
+    homeScore: 5,
+    awayScore: 1,
     options: enrichOptions([
       { label: "H2", quote: 4.4 },
       { label: "X", quote: 3.4 },
