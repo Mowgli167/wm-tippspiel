@@ -73,9 +73,13 @@ export default function AuswertungPage() {
     );
   }
 
-  const visibleMatches = matches.filter((match) =>
-    isMatchVisible(match.startsAt)
-  );
+  const visibleMatches = matches
+    .filter((match) => isMatchVisible(match.startsAt))
+    .sort(
+      (a, b) =>
+        new Date(b.startsAt).getTime() -
+        new Date(a.startsAt).getTime()
+    );
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-950 via-blue-950 to-slate-950 p-6 md:p-10 space-y-8 text-white">
@@ -172,43 +176,45 @@ export default function AuswertungPage() {
                   </div>
                 </div>
 
-                <div className="overflow-hidden rounded-2xl border border-white/10">
-                  <div className="grid grid-cols-[1fr_1.5fr_auto_auto] gap-3 bg-slate-950/80 px-4 py-3 text-sm font-bold text-zinc-400">
-                    <div>Spieler</div>
-                    <div>Tipp</div>
-                    <div>Joker</div>
-                    <div className="text-right">Punkte</div>
-                  </div>
+                <div className="overflow-x-auto rounded-2xl border border-white/10">
+                  <div className="min-w-[720px]">
+                    <div className="grid grid-cols-[1fr_1.5fr_auto_auto] gap-3 bg-slate-950/80 px-4 py-3 text-sm font-bold text-zinc-400">
+                      <div>Spieler</div>
+                      <div>Tipp</div>
+                      <div>Joker</div>
+                      <div className="text-right">Punkte</div>
+                    </div>
 
-                  <div className="divide-y divide-white/10">
-                    {sortedTips.map((entry) => (
-                      <div
-                        key={entry.player.id}
-                        className="grid grid-cols-[1fr_1.5fr_auto_auto] gap-3 px-4 py-4 items-center"
-                      >
-                        <div className="font-bold">
-                          {entry.player.name}
-                        </div>
+                    <div className="divide-y divide-white/10">
+                      {sortedTips.map((entry) => (
+                        <div
+                          key={entry.player.id}
+                          className="grid grid-cols-[1fr_1.5fr_auto_auto] gap-3 px-4 py-4 items-center"
+                        >
+                          <div className="font-bold">
+                            {entry.player.name}
+                          </div>
 
-                        <div className="text-zinc-300">
-                          {entry.tip
-                            ? displayTipLabel(
-                                entry.tip,
-                                match.homeTeam,
-                                match.awayTeam
-                              )
-                            : "Kein Tipp"}
-                        </div>
+                          <div className="text-zinc-300">
+                            {entry.tip
+                              ? displayTipLabel(
+                                  entry.tip,
+                                  match.homeTeam,
+                                  match.awayTeam
+                                )
+                              : "Kein Tipp"}
+                          </div>
 
-                        <div className="text-center">
-                          {entry.joker ? "⭐" : "–"}
-                        </div>
+                          <div className="text-center">
+                            {entry.joker ? "⭐" : "–"}
+                          </div>
 
-                        <div className="text-right font-black text-yellow-300">
-                          {entry.points}
+                          <div className="text-right font-black text-yellow-300">
+                            {entry.points}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
               </section>
