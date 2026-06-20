@@ -669,7 +669,7 @@ export const matches: Match[] = [
     homeTeam: "Deutschland",
     awayTeam: "Elfenbeinküste",
     homeScore: 2,
-    awayScore, 1,
+    awayScore: 1,
     options: enrichOptions([
       { label: "H2", quote: 3.0 },
       { label: "X", quote: 4.5 },
