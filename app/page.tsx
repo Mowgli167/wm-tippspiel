@@ -2,10 +2,17 @@
 
 import Link from "next/link";
 
+import { bonusQuestions } from "@/data/bonusQuestions";
+import { bonusResults } from "@/data/bonusResults";
 import { matches } from "@/data/matches";
+import { useAllBonusTips } from "@/hooks/useAllBonusTips";
 import { useAllTips } from "@/hooks/useAllTips";
 import { usePlayers } from "@/hooks/usePlayers";
-import { calculateFinalPoints, isWinningTip } from "@/utils";
+import {
+  calculateFinalPoints,
+  calculatePoints,
+  isWinningTip,
+} from "@/utils";
 
 const TOTAL_WORLD_CUP_MATCHES = 104;
 
@@ -37,6 +44,7 @@ function displayTipLabel(
 export default function HomePage() {
   const { players } = usePlayers();
   const { allTips } = useAllTips();
+  const { allBonusTips } = useAllBonusTips();
 
   const finishedMatches = matches.filter(
     (match) =>
@@ -58,7 +66,7 @@ export default function HomePage() {
         new Date(b.startsAt).getTime()
     )[0];
 
-  function calculatePlayerPoints(playerId: number) {
+  function calculatePlayerMatchPoints(playerId: number) {
     const playerTips = allTips.filter(
       (tip) => tip.player_id === playerId
     );
@@ -103,11 +111,50 @@ export default function HomePage() {
     }, 0);
   }
 
+  function calculatePlayerBonusPoints(playerId: number) {
+    const playerBonusTips = allBonusTips.filter(
+      (tip) => tip.player_id === playerId
+    );
+
+    return playerBonusTips.reduce((total, storedBonusTip) => {
+      const correctAnswer =
+        bonusResults[storedBonusTip.question];
+
+      if (!correctAnswer) return total;
+
+      if (storedBonusTip.answer !== correctAnswer) {
+        return total;
+      }
+
+      const question = bonusQuestions.find(
+        (bonusQuestion) =>
+          bonusQuestion.id === storedBonusTip.question
+      );
+
+      if (!question) return total;
+
+      const selectedOption = question.options.find(
+        (option) => option.label === storedBonusTip.answer
+      );
+
+      if (!selectedOption) return total;
+
+      return total + calculatePoints(selectedOption.quote);
+    }, 0);
+  }
+
+  function calculatePlayerTotalPoints(playerId: number) {
+    return (
+      calculatePlayerMatchPoints(playerId) +
+      calculatePlayerBonusPoints(playerId)
+    );
+  }
+
   const topThree = players
     .map((player) => ({
       id: player.id,
       name: player.name,
-      points: calculatePlayerPoints(player.id),
+      points: calculatePlayerTotalPoints(player.id),
     }))
     .sort((a, b) => b.points - a.points)
     .slice(0, 3);
