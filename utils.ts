@@ -1,9 +1,7 @@
 export function calculatePoints(
   quote: number
 ) {
-  return Math.floor(
-    (quote - 1) * 10
-  );
+  return Math.floor((quote - 1) * 10);
 }
 
 export function calculateFinalPoints(
@@ -11,8 +9,7 @@ export function calculateFinalPoints(
   phase: string,
   jokerActive?: boolean
 ) {
-  const basePoints =
-    calculatePoints(quote);
+  const basePoints = calculatePoints(quote);
 
   const phaseMultipliers: Record<string, number> = {
     Vorrunde: 1,
@@ -20,14 +17,13 @@ export function calculateFinalPoints(
     Achtelfinale: 3,
     Viertelfinale: 4,
     Halbfinale: 5,
+    "Spiel um Platz 3": 5,
     Finale: 6,
   };
 
-  const multiplier =
-    phaseMultipliers[phase] ?? 1;
+  const multiplier = phaseMultipliers[phase] ?? 1;
 
-  let total =
-    basePoints * multiplier;
+  let total = basePoints * multiplier;
 
   if (jokerActive) {
     total *= 2;
@@ -73,8 +69,7 @@ export function isWinningTip(
   awayScore: number,
   tip: string
 ) {
-  const diff =
-    homeScore - awayScore;
+  const diff = homeScore - awayScore;
 
   switch (tip) {
     case "H":
