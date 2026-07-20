@@ -1,6 +1,6 @@
 export const bonusResults: Record<string, string> = {
-  weltmeister: "",
-  torschuetzenkoenig: "",
+  weltmeister: "Spanien",
+  torschuetzenkoenig: "Kylian Mbappé",
 
   "gruppe-a": "Mexiko",
   "gruppe-b": "Schweiz",
