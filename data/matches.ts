@@ -2062,6 +2062,8 @@ export const matches: Match[] = [
     startsAt: "2026-07-19T21:00:00+02:00",
     homeTeam: "Spanien",
     awayTeam: "Argentinien",
+    homeScore: 0,
+    awayScore: 0,
     options: enrichOptions([
       { label: "H2", quote: 6.0 },
       { label: "X", quote: 3.0 },
